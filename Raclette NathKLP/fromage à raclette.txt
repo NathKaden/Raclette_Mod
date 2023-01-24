@@ -1,0 +1,32 @@
+Comment faire une raclette - NathKLP
+pour faire une raclette il faut tout d'abord:
+fromage en tranches = sliced cheese (itemsadder)
+Procédé:
+Avec le fromage, on le mets dans un appareil à raclette qui a la même interface que l'enclume pour combiner une coupelle 
+avec le fromage
+et ça devient du fromage fondu (texture coupelle avec du fromage fondu dessus)
+fromage sur coupelle avant de mettre dans raclette
+on peut manger le fromage fondu
+on peut laver la coupelle
+craft machine à raclette:
+iron_ingot = I
+gold_nugget = G
+redstone = R
+lever = L
+craft:
+III
+GRG
+ILI
+
+craft coupelle:
+
+
+craft de fin:
+Fromage fondu = A
+jambon cuit ou rôti de boeuf = B
+pomme de terre pelée = C
+rien = 0
+craft:
+0A0
+0B0
+0C0
