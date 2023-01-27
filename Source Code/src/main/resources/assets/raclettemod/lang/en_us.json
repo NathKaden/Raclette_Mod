@@ -2,5 +2,6 @@
   "item.raclettemod.fromage" : "Cheese",
   "item.raclettemod.coupelle": "Raclette Dish",
   "item.raclettemod.coupelle_sale": "Dirty Raclette Dish",
-  "item.raclettemod.coupelle_fromage": "Raclette Dish With Raw Cheese"
+  "item.raclettemod.coupelle_fromage": "Raclette Dish With Raw Cheese",
+  "itemGroup.raclettemod": "Raclette Mod"
 }

@@ -2,5 +2,6 @@
   "item.raclettemod.fromage": "Fromage",
   "item.raclettemod.coupelle": "Coupelle",
   "item.raclettemod.coupelle_sale": "Coupelle sale",
-  "item.raclettemod.coupelle_fromage": "Coupelle avec du fromage"
+  "item.raclettemod.coupelle_fromage": "Coupelle avec du fromage",
+  "itemGroup.raclettemod": "Raclette Mod"
 }
