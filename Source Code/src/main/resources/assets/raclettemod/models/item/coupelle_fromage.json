@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "raclettemod:item/coupelle_fromage"
+  }
+}

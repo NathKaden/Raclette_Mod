@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key":
+  {
+    "o": {"item": "minecraft:iron_nugget"},
+    "O": {"item": "minecraft:iron_ingot"}
+  },
+  "pattern": [
+    "  o",
+    " O "
+  ],
+  "result": {
+    "item": "raclettemod:coupelle"
+  }
+}
