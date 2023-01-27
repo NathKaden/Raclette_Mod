@@ -17,7 +17,7 @@ import java.util.function.Supplier;
 
 public class RacletteBlocks{
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, RacletteMod.MODID);
-    public static final RegistryObject<Block> BLOC_FROMAGE = registerBlock("bloc_fromage", () -> new Block(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.HONEY_BLOCK)), CreativeModeTab.TAB_FOOD);
+    public static final RegistryObject<Block> APPAREIL_RACLETTE = registerBlock("appareil_raclette", () -> new Block(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.ANVIL)), CreativeModeTab.TAB_DECORATIONS);
 
 
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block, CreativeModeTab tab){
