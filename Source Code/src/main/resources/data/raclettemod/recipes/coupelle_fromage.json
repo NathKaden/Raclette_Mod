@@ -6,8 +6,8 @@
     "O": {"item": "raclettemod:fromage"}
   },
   "pattern": [
-    " O ",
-    " o "
+    "O",
+    "o"
   ],
   "result": {
     "item": "raclettemod:coupelle_fromage"
