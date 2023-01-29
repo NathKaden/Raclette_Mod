@@ -6,8 +6,8 @@
     "O": {"item": "minecraft:iron_ingot"}
   },
   "pattern": [
-    "  o",
-    " O "
+    " o",
+    "O "
   ],
   "result": {
     "item": "raclettemod:coupelle"
