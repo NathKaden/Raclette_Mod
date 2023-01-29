@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "key":
+  {
+    "m": {"item": "minecraft:milk_bucket"},
+    "s": {"item": "minecraft:sunflower"}
+  },
+  "pattern": [
+    "ms"
+  ],
+  "result": {
+    "item": "raclettemod:coupelle"
+  }
+}
