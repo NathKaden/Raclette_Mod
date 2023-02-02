@@ -2,9 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "key":
   {
-    "C": {"item": "raclettemod:coupelle_fromage_cuit"},
+    "C": {"item": "raclettemod:coupelle_fromage_fondu"},
     "R": {"item": "minecraft:raw_porkchop"},
-    "B": {"item": "minecraft:baked_potato"}
+    "B": {"item": "raclettemod:patate_epluchee"}
   },
   "pattern": [
     "C",

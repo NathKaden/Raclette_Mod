@@ -1,7 +1,11 @@
 {
   "item.raclettemod.fromage" : "Cheese",
-  "item.raclettemod.coupelle": "Raclette Dish",
-  "item.raclettemod.coupelle_sale": "Dirty Raclette Dish",
-  "item.raclettemod.coupelle_fromage": "Raclette Dish With Raw Cheese",
+  "item.raclettemod.coupelle": "Empty Raclette Dish",
+  "item.raclettemod.coupelle_sale": "Empty Dirty Raclette Dish",
+  "item.raclettemod.raclette": "Raclette",
+  "item.raclettemod.coupelle_fromage": "Raclette Dish",
+  "item.raclettemod.coupelle_fromage_fondu": "Molten Raclette Dish",
+  "item.raclettemod.tranche_fromage" : "Slice of Cheese",
+  "item.raclettemod.patate_epluchee": "Peeled Potato",
   "itemGroup.raclettemod": "Raclette Mod"
 }

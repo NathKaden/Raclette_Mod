@@ -7,7 +7,7 @@ public class RacletteTab {
     public static final CreativeModeTab RACLETTE_TAB = new CreativeModeTab("raclettemod") {
         @Override
         public ItemStack makeIcon() {
-            return new ItemStack(RacletteItems.COUPELLE_FROMAGE.get());
+            return new ItemStack(RacletteItems.COUPELLE_FROMAGE_FONDU.get());
         }
     };
 }
