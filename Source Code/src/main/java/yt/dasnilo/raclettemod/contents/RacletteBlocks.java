@@ -1,7 +1,6 @@
 package yt.dasnilo.raclettemod.contents;
 
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
@@ -17,17 +16,17 @@ import java.util.function.Supplier;
 
 public class RacletteBlocks{
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, RacletteMod.MODID);
-    public static final RegistryObject<Block> APPAREIL_RACLETTE = registerBlock("appareil_raclette", () -> new Block(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.ANVIL)), CreativeModeTab.TAB_DECORATIONS);
+    public static final RegistryObject<Block> APPAREIL_RACLETTE = registerBlock("appareil_raclette", () -> new Block(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.ANVIL)));
 
 
-    private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block, CreativeModeTab tab){
+    private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block){
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
-        registerBlockItem(name, toReturn, tab);
+        registerBlockItem(name, toReturn);
         return toReturn;
     }
 
-    private static <T extends Block> RegistryObject<Item> registerBlockItem(String name, RegistryObject<T> block, CreativeModeTab tab) {
-        return RacletteItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().tab(RacletteTab.RACLETTE_TAB).tab(tab)));
+    private static <T extends Block> RegistryObject<Item> registerBlockItem(String name, RegistryObject<T> block) {
+        return RacletteItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().tab(RacletteTab.RACLETTE_TAB)));
     }
 
     public static void register(IEventBus eventBus){
