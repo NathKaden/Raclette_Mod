@@ -1,9 +1,9 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"0": "colors/dark_grey",
-		"1": "colors/metal",
-		"particle": "colors/dark_grey"
+		"0": "raclettemod:colormap/dark_grey",
+		"1": "raclettemod:colormap/metal",
+		"particle": "raclettemod:colormap/dark_grey"
 	},
 	"elements": [
 		{
