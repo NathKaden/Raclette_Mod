@@ -7,6 +7,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import org.slf4j.Logger;
+import yt.dasnilo.raclettemod.contents.RacletteBlocks;
 import yt.dasnilo.raclettemod.contents.RacletteItems;
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -20,10 +21,9 @@ public class RacletteMod
       IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
       logger.info("Mod démarré avec succés !");
       RacletteItems.register(modEventBus);
+      RacletteBlocks.register(modEventBus);
       MinecraftForge.EVENT_BUS.register(this);
   }
-
-  private void commonSetup(final FMLCommonSetupEvent event){
-
-  }
+  private void commonSetup(final FMLCommonSetupEvent event){}
+  public void ha(){this.commonSetup(null);}
 }
