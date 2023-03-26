@@ -3,6 +3,7 @@ package yt.dasnilo.raclettemod;
 import com.mojang.logging.LogUtils;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -22,8 +23,11 @@ public class RacletteMod
       logger.info("Mod démarré avec succés !");
       RacletteItems.register(modEventBus);
       RacletteBlocks.register(modEventBus);
+      RacletteBlocks.register(modEventBus);
+      modEventBus.addListener(this::commonSetup);
+      modEventBus.addListener(this::clientSetup);
       MinecraftForge.EVENT_BUS.register(this);
   }
   private void commonSetup(final FMLCommonSetupEvent event){}
-  public void ha(){this.commonSetup(null);}
+  private void clientSetup(final FMLClientSetupEvent event){}
 }
