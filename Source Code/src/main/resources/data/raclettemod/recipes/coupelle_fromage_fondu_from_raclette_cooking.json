@@ -1,0 +1,11 @@
+{
+    "type": "raclettemod:raclette_cooking",
+    "ingredients": [
+        {
+            "item": "raclettemod:coupelle_fromage"
+        }
+    ],
+    "output": {
+        "item": "raclettemod:coupelle_fromage_fondu"
+    }
+}

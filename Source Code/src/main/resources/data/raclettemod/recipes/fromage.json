@@ -1,12 +1,8 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "key":
-  {
-    "m": {"item": "minecraft:milk_bucket"},
-    "s": {"item": "minecraft:sunflower"}
-  },
-  "pattern": [
-    "ms"
+  "ingredients": [
+    {"item": "minecraft:sunflower"},
+    {"item": "minecraft:milk_bucket"}
   ],
   "result": {
     "item": "raclettemod:fromage"

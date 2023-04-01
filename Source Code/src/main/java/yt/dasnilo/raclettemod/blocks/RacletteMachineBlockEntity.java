@@ -1,12 +1,11 @@
 package yt.dasnilo.raclettemod.blocks;
 
-import javax.swing.plaf.basic.BasicComboBoxUI.ItemHandler;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import yt.dasnilo.raclettemod.recipe.RacletteMachineRecipe;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Containers;
@@ -19,16 +18,14 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import yt.dasnilo.raclettemod.contents.RacletteBlockEntities;
-import yt.dasnilo.raclettemod.contents.RacletteItems;
 import yt.dasnilo.raclettemod.screen.RacletteMachineMenu;
+import java.util.Optional;
 
 public class RacletteMachineBlockEntity extends BlockEntity implements MenuProvider{
 
@@ -129,21 +126,30 @@ public class RacletteMachineBlockEntity extends BlockEntity implements MenuProvi
     }
 
     private static void craftItem(RacletteMachineBlockEntity entity) {
+        Level level = entity.level;
+        SimpleContainer inventory = new SimpleContainer(entity.itemHandler.getSlots());
+        for (int i = 0; i < entity.itemHandler.getSlots(); i++) {
+            inventory.setItem(i, entity.itemHandler.getStackInSlot(i));
+        }
+
+        Optional<RacletteMachineRecipe> recipe = level.getRecipeManager()
+                .getRecipeFor(RacletteMachineRecipe.Type.INSTANCE, inventory, level);
+        
         if(hasRecipe(entity)){
             entity.itemHandler.extractItem(1, 1, false);
-            entity.itemHandler.setStackInSlot(2, new ItemStack(RacletteItems.COUPELLE_FROMAGE_FONDU.get(), entity.itemHandler.getStackInSlot(2).getCount() + 1));
+            entity.itemHandler.setStackInSlot(2, new ItemStack(recipe.get().getResultItem().getItem(), entity.itemHandler.getStackInSlot(2).getCount() + 1));
             entity.resetProgress();
         }
     }
 
     private static boolean hasRecipe(RacletteMachineBlockEntity entity) {
+        Level level = entity.level;
         SimpleContainer inventory = new SimpleContainer(entity.itemHandler.getSlots());
         for(int i = 0;i<entity.itemHandler.getSlots();i++){
             inventory.setItem(i, entity.itemHandler.getStackInSlot(i));
         }
-
-        boolean gotRawRaclette = entity.itemHandler.getStackInSlot(1).getItem() == RacletteItems.COUPELLE_FROMAGE.get();
-        return gotRawRaclette && canInsertAmount(inventory) && canInsertItem(inventory, new ItemStack(RacletteItems.COUPELLE_FROMAGE_FONDU.get(), 1));
+        Optional<RacletteMachineRecipe> recipe = level.getRecipeManager().getRecipeFor(RacletteMachineRecipe.Type.INSTANCE, inventory, level);
+        return recipe.isPresent() && canInsertAmount(inventory) && canInsertItem(inventory, recipe.get().getResultItem());
     }
 
     private static boolean canInsertItem(SimpleContainer inventory, ItemStack itemStack) {

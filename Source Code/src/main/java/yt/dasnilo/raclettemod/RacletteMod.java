@@ -16,6 +16,7 @@ import yt.dasnilo.raclettemod.contents.RacletteBlockEntities;
 import yt.dasnilo.raclettemod.contents.RacletteBlocks;
 import yt.dasnilo.raclettemod.contents.RacletteItems;
 import yt.dasnilo.raclettemod.contents.RacletteMenuTypes;
+import yt.dasnilo.raclettemod.contents.RacletteRecipes;
 import yt.dasnilo.raclettemod.screen.RacletteMachineScreen;
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -31,6 +32,7 @@ public class RacletteMod
       RacletteItems.register(modEventBus);
       RacletteBlocks.register(modEventBus);
       RacletteBlockEntities.register(modEventBus);
+      RacletteRecipes.register(modEventBus);
       RacletteMenuTypes.register(modEventBus);
       modEventBus.addListener(this::commonSetup);
       MinecraftForge.EVENT_BUS.register(this);

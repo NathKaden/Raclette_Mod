@@ -2,11 +2,11 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "item": "minecraft:fromage"
+      "item": "raclettemod:fromage"
     }
   ],
   "result": {
     "count": 9,
-    "item": "minecraft:tranche_fromage"
+    "item": "raclettemod:tranche_fromage"
   }
 }

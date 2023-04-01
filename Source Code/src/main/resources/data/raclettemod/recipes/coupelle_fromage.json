@@ -3,7 +3,7 @@
   "key":
   {
     "o": {"item": "raclettemod:coupelle"},
-    "O": {"item": "raclettemod:fromage"}
+    "O": {"item": "raclettemod:tranche_fromage"}
   },
   "pattern": [
     "O",
