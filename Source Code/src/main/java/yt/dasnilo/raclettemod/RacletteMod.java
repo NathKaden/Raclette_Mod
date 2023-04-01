@@ -1,15 +1,22 @@
 package yt.dasnilo.raclettemod;
 
 import com.mojang.logging.LogUtils;
+
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import org.slf4j.Logger;
+
+import yt.dasnilo.raclettemod.contents.RacletteBlockEntities;
 import yt.dasnilo.raclettemod.contents.RacletteBlocks;
 import yt.dasnilo.raclettemod.contents.RacletteItems;
+import yt.dasnilo.raclettemod.contents.RacletteMenuTypes;
+import yt.dasnilo.raclettemod.screen.RacletteMachineScreen;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(RacletteMod.MODID)
@@ -23,11 +30,17 @@ public class RacletteMod
       logger.info("Mod démarré avec succés !");
       RacletteItems.register(modEventBus);
       RacletteBlocks.register(modEventBus);
-      RacletteBlocks.register(modEventBus);
+      RacletteBlockEntities.register(modEventBus);
+      RacletteMenuTypes.register(modEventBus);
       modEventBus.addListener(this::commonSetup);
-      modEventBus.addListener(this::clientSetup);
       MinecraftForge.EVENT_BUS.register(this);
   }
   private void commonSetup(final FMLCommonSetupEvent event){}
-  private void clientSetup(final FMLClientSetupEvent event){}
+  @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+  public static class ClientModEvents{
+    @SubscribeEvent
+    public static void onClientSetup(FMLClientSetupEvent event){
+      MenuScreens.register(RacletteMenuTypes.RACLETTE_MACHINE_MENU.get(), RacletteMachineScreen::new);
+    }
+  }
 }
