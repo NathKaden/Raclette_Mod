@@ -64,7 +64,7 @@ public class RacletteMachineBlockEntity extends BlockEntity implements MenuProvi
 
     @Override
     public Component getDisplayName() {
-        return Component.literal("Raclette Machine");
+        return Component.translatable("raclette_machine_gui");
     }
 
     @Override

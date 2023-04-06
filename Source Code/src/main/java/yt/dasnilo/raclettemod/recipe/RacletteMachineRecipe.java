@@ -17,7 +17,7 @@ public class RacletteMachineRecipe implements Recipe<SimpleContainer>{
     private final ResourceLocation id;
     private final ItemStack output;
     private final NonNullList<Ingredient> recipeItems;
-    
+
     public RacletteMachineRecipe(ResourceLocation id, ItemStack output, NonNullList<Ingredient> recipeItems) {
             this.id = id;
             this.output = output;

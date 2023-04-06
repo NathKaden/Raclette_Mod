@@ -18,7 +18,8 @@ public class RacletteBlocks {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, RacletteMod.MODID);
     
     public static final RegistryObject<Block> appareilRaclette = createBlock("appareil_raclette", () -> new RacletteMachineBlock(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.ANVIL).noOcclusion()));
-
+    public static final RegistryObject<Block> testBlock = createBlock("test_block", () -> new Block(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.AMETHYST)));
+    
     public static RegistryObject<Block> createBlock(String name, Supplier<? extends Block> supplier){
         RegistryObject<Block> block = BLOCKS.register(name, supplier);
         RacletteItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().tab(RacletteTab.RACLETTE_TAB)));
