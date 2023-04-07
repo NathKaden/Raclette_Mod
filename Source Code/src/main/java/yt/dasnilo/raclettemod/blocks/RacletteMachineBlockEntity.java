@@ -132,8 +132,7 @@ public class RacletteMachineBlockEntity extends BlockEntity implements MenuProvi
             inventory.setItem(i, entity.itemHandler.getStackInSlot(i));
         }
 
-        Optional<RacletteMachineRecipe> recipe = level.getRecipeManager()
-                .getRecipeFor(RacletteMachineRecipe.Type.INSTANCE, inventory, level);
+        Optional<RacletteMachineRecipe> recipe = level.getRecipeManager().getRecipeFor(RacletteMachineRecipe.Type.INSTANCE, inventory, level);
         
         if(hasRecipe(entity)){
             entity.itemHandler.extractItem(1, 1, false);
