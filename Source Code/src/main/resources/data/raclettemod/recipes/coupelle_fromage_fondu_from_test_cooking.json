@@ -1,0 +1,13 @@
+{
+    "type": "raclettemod:test_cooking",
+    "ingredients": [
+        {
+            "item": "raclettemod:coupelle_fromage"
+        }
+    ],
+    "result": {
+        "item": "raclettemod:coupelle_fromage_fondu"
+    },
+    "experience": 100,
+    "cookingtime": 250
+}
