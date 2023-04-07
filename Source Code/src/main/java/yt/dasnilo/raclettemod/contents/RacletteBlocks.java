@@ -13,13 +13,11 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.function.Supplier;
 import yt.dasnilo.raclettemod.RacletteMod;
 import yt.dasnilo.raclettemod.blocks.RacletteMachineBlock;
-import yt.dasnilo.raclettemod.blocks.TestBlock;
 
 public class RacletteBlocks {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, RacletteMod.MODID);
     
-    public static final RegistryObject<Block> appareilRaclette = createBlock("appareil_raclette", () -> new RacletteMachineBlock(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.ANVIL).noOcclusion()));
-    public static final RegistryObject<Block> testBlock = createBlock("test_block", () -> new TestBlock(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.AMETHYST).noOcclusion()));   
+    public static final RegistryObject<Block> appareilRaclette = createBlock("appareil_raclette", () -> new RacletteMachineBlock(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.ANVIL).noOcclusion()));    
     
     public static RegistryObject<Block> createBlock(String name, Supplier<? extends Block> supplier){
         RegistryObject<Block> block = BLOCKS.register(name, supplier);

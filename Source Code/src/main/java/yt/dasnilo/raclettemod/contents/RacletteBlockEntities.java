@@ -7,14 +7,12 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import yt.dasnilo.raclettemod.RacletteMod;
 import yt.dasnilo.raclettemod.blocks.RacletteMachineBlockEntity;
-import yt.dasnilo.raclettemod.blocks.TestBlockEntity;
 
 public class RacletteBlockEntities {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, RacletteMod.MODID);
     
     public static final RegistryObject<BlockEntityType<RacletteMachineBlockEntity>> RACLETTE_MACHINE = BLOCK_ENTITIES.register("appareil_raclette", () -> BlockEntityType.Builder.of(RacletteMachineBlockEntity::new, RacletteBlocks.appareilRaclette.get()).build(null));
-    public static final RegistryObject<BlockEntityType<TestBlockEntity>> TEST_BLOCK = BLOCK_ENTITIES.register("test_block", () -> BlockEntityType.Builder.of(TestBlockEntity::new, RacletteBlocks.testBlock.get()).build(null));
-
+    
     public static void register(IEventBus eventBus){
         BLOCK_ENTITIES.register(eventBus);
     }

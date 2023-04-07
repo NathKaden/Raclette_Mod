@@ -2,14 +2,14 @@ package yt.dasnilo.raclettemod.recipe;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -20,39 +20,41 @@ import net.minecraft.world.level.Level;
 import yt.dasnilo.raclettemod.RacletteMod;
 import yt.dasnilo.raclettemod.contents.RacletteBlocks;
 
-public class TestBlockRecipe implements Recipe<SimpleContainer>{
+public class RacletteRecipe implements Recipe<Container>{
 
     private final ResourceLocation id;
     private final ItemStack result;
-    private final NonNullList<Ingredient> recipeItems;
+    private final Ingredient recipeItem;
     private final int cookingTime;
     private final float experience;
 
-    public TestBlockRecipe(ResourceLocation id, ItemStack output, NonNullList<Ingredient> inputs, int cookingTime, float experience){
+    public RacletteRecipe(ResourceLocation id, ItemStack output, Ingredient input, int cookingTime, float experience){
         this.id = id;
         this.result = output;
-        this.recipeItems = inputs;
+        this.recipeItem = input;
         this.cookingTime = cookingTime;
         this.experience = experience;
     }
 
     @Override
-    public boolean matches(SimpleContainer pContainer, Level pLevel) {
+    public boolean matches(Container pContainer, Level pLevel) {
         if(pLevel.isClientSide()) {
             return false;
        }
 
-       return recipeItems.get(0).test(pContainer.getItem(0));
+       return recipeItem.test(pContainer.getItem(0));
     }
 
     @Override
-    public ItemStack assemble(SimpleContainer pContainer) {
+    public ItemStack assemble(Container pContainer) {
         return result;
     }
 
     @Override
     public NonNullList<Ingredient> getIngredients() {
-        return recipeItems;
+        NonNullList<Ingredient> nonnulllist = NonNullList.create();
+        nonnulllist.add(this.recipeItem);
+        return nonnulllist;
     }
 
     @Override
@@ -62,7 +64,7 @@ public class TestBlockRecipe implements Recipe<SimpleContainer>{
 
     @Override
     public ItemStack getToastSymbol() {
-        return new ItemStack(RacletteBlocks.testBlock.get());
+        return new ItemStack(RacletteBlocks.appareilRaclette.get());
     }
 
     @Override
@@ -72,6 +74,10 @@ public class TestBlockRecipe implements Recipe<SimpleContainer>{
 
     public int getCookingTime() {
         return this.cookingTime;
+    }
+
+    public float getExperience(){
+        return this.experience;
     }
 
     @Override
@@ -89,45 +95,35 @@ public class TestBlockRecipe implements Recipe<SimpleContainer>{
         return Type.INSTANCE;
     }
 
-    public static class Type implements RecipeType<TestBlockRecipe>{
+    public static class Type implements RecipeType<RacletteRecipe>{
         private Type(){}
         public static final Type INSTANCE = new Type();
-        public static final String ID = "test_block";
+        public static final String ID = "raclette_machine";
     }
 
-    public static class Serializer implements RecipeSerializer<TestBlockRecipe>{
+    public static class Serializer implements RecipeSerializer<RacletteRecipe>{
         public static final Serializer INSTANCE = new Serializer();
-        public static final ResourceLocation ID = new ResourceLocation(RacletteMod.MODID, "test_cooking");
+        public static final ResourceLocation ID = new ResourceLocation(RacletteMod.MODID, "raclette_cooking");
         @Override
-        public TestBlockRecipe fromJson(ResourceLocation pRecipeId, JsonObject pSerializedRecipe) {
+        public RacletteRecipe fromJson(ResourceLocation pRecipeId, JsonObject pSerializedRecipe) {
+            JsonElement jsonelement = (JsonElement)(GsonHelper.isArrayNode(pSerializedRecipe, "ingredient") ? GsonHelper.getAsJsonArray(pSerializedRecipe, "ingredient") : GsonHelper.getAsJsonObject(pSerializedRecipe, "ingredient"));
+            Ingredient ingredient = Ingredient.fromJson(jsonelement);
             ItemStack result = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(pSerializedRecipe, "result"));
-            JsonArray ingredients = GsonHelper.getAsJsonArray(pSerializedRecipe, "ingredients");
-            NonNullList<Ingredient> inputs = NonNullList.withSize(1, Ingredient.EMPTY);
-            for (int i = 0; i < inputs.size(); i++) {
-                inputs.set(i, Ingredient.fromJson(ingredients.get(i)));
-            }
             float experience = GsonHelper.getAsFloat(pSerializedRecipe, "experience", 0.0F);
             int cookingTime = GsonHelper.getAsInt(pSerializedRecipe, "cookingtime");
-            return new TestBlockRecipe(pRecipeId, result, inputs, cookingTime, experience);
+            return new RacletteRecipe(pRecipeId, result, ingredient, cookingTime, experience);
         }
         @Override
-        public @Nullable TestBlockRecipe fromNetwork(ResourceLocation pRecipeId, FriendlyByteBuf pBuffer) {
-            NonNullList<Ingredient> inputs = NonNullList.withSize(pBuffer.readInt(), Ingredient.EMPTY);
-            for(int i=0;i<inputs.size();i++){
-                inputs.set(i, Ingredient.fromNetwork(pBuffer));
-            }
-
+        public @Nullable RacletteRecipe fromNetwork(ResourceLocation pRecipeId, FriendlyByteBuf pBuffer) {
+            Ingredient ingredient = Ingredient.fromNetwork(pBuffer);
             ItemStack result = pBuffer.readItem();
             float exp = pBuffer.readFloat();
             int cook = pBuffer.readVarInt();
-            return new TestBlockRecipe(pRecipeId, result, inputs, cook, exp);
+            return new RacletteRecipe(pRecipeId, result, ingredient, cook, exp);
         }
         @Override
-        public void toNetwork(FriendlyByteBuf pBuffer, TestBlockRecipe pRecipe) {
-            pBuffer.writeInt(pRecipe.getIngredients().size());
-            for(Ingredient ing : pRecipe.getIngredients()){
-                ing.toNetwork(pBuffer);
-            }
+        public void toNetwork(FriendlyByteBuf pBuffer, RacletteRecipe pRecipe) {
+            pRecipe.recipeItem.toNetwork(pBuffer);
             pBuffer.writeItemStack(pRecipe.getResultItem(), false);
             pBuffer.writeFloat(pRecipe.experience);
             pBuffer.writeVarInt(pRecipe.cookingTime);

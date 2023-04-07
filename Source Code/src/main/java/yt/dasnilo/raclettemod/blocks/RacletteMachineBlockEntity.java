@@ -1,165 +1,141 @@
 package yt.dasnilo.raclettemod.blocks;
 
-import org.jetbrains.annotations.NotNull;
+import java.util.Optional;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import yt.dasnilo.raclettemod.recipe.RacletteMachineRecipe;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.Clearable;
+import net.minecraft.world.Container;
+import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.Containers;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeManager.CachedCheck;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.ItemStackHandler;
+import net.minecraft.world.level.gameevent.GameEvent;
 import yt.dasnilo.raclettemod.contents.RacletteBlockEntities;
-import yt.dasnilo.raclettemod.screen.RacletteMachineMenu;
-import java.util.Optional;
+import yt.dasnilo.raclettemod.recipe.RacletteRecipe;
 
-public class RacletteMachineBlockEntity extends BlockEntity implements MenuProvider{
+public class RacletteMachineBlockEntity extends BlockEntity implements Clearable{
 
-    private final ItemStackHandler itemHandler = new ItemStackHandler(3){
-        protected void onContentsChanged(int slot) {setChanged();};
-    };
-    protected final ContainerData data;
-    private int progress = 0;
-    private int maxProgress = 78;
-    private LazyOptional<ItemStackHandler> lazyItemHandler = LazyOptional.empty();
+    private static final int NUM_SLOTS = 4;
+    private final NonNullList<ItemStack> items = NonNullList.withSize(4, ItemStack.EMPTY);
+    private final int[] cookingProgress = new int[4];
+    private final int[] cookingTime = new int[4];
+    private final CachedCheck<Container, RacletteRecipe> quickCheck = RecipeManager.createCheck(RacletteRecipe.Type.INSTANCE);
 
-    public RacletteMachineBlockEntity(BlockPos p_155229_, BlockState p_155230_) {
-        super(RacletteBlockEntities.RACLETTE_MACHINE.get(), p_155229_, p_155230_);
-        this.data = new ContainerData(){
-            public int get(int p_39284_){
-                return switch (p_39284_){
-                    case 0 -> RacletteMachineBlockEntity.this.progress;
-                    case 1 -> RacletteMachineBlockEntity.this.maxProgress;
-                    default -> 0;
-                };
+    public RacletteMachineBlockEntity(BlockPos pPos, BlockState pBlockState) {
+        super(RacletteBlockEntities.RACLETTE_MACHINE.get(), pPos, pBlockState);
+    }
+
+    public static void cookTick(Level pLevel, BlockPos pPos, BlockState pState, RacletteMachineBlockEntity pBlockEntity) {
+        boolean flag = false;
+        for(int i = 0; i < pBlockEntity.items.size(); i++) {
+            ItemStack itemstack = pBlockEntity.items.get(i);
+            if (!itemstack.isEmpty()) {
+                flag = true;
+                pBlockEntity.cookingProgress[i]++;
+                if (pBlockEntity.cookingProgress[i] >= pBlockEntity.cookingTime[i]) {
+                    Container container = new SimpleContainer(itemstack);
+                    ItemStack itemstack1 = pBlockEntity.quickCheck.getRecipeFor(container, pLevel).map((p_155305_) -> {
+                        return p_155305_.assemble(container);
+                    }).orElse(itemstack);
+                    Containers.dropItemStack(pLevel, (double)pPos.getX(), (double)pPos.getY(), (double)pPos.getZ(), itemstack1);
+                    pBlockEntity.items.set(i, ItemStack.EMPTY);
+                    pLevel.sendBlockUpdated(pPos, pState, pState, 3);
+                    pLevel.gameEvent(GameEvent.BLOCK_CHANGE, pPos, GameEvent.Context.of(pState));
+                }
             }
-            public void set(int p_39285_, int p_39286_){
-                switch (p_39285_){
-                    case 0 -> RacletteMachineBlockEntity.this.progress = p_39286_;
-                    case 1 -> RacletteMachineBlockEntity.this.maxProgress = p_39286_;
-                };
-            }
-            public int getCount() {return 2;};
-        };
-    }
-
-    @Override
-    public AbstractContainerMenu createMenu(int id, Inventory inv, Player player) {
-        return new RacletteMachineMenu(id, inv, this, this.data);
-    }
-
-    @Override
-    public Component getDisplayName() {
-        return Component.translatable("raclette_machine_gui");
-    }
-
-    @Override
-    public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if(cap == ForgeCapabilities.ITEM_HANDLER){
-            return lazyItemHandler.cast();
-        }
-        return super.getCapability(cap, side);
-    }
-
-    @Override
-    public void onLoad() {
-        super.onLoad();
-        lazyItemHandler = LazyOptional.of(() -> itemHandler);
-    }
-
-    @Override
-    public void invalidateCaps() {
-        super.invalidateCaps();
-        lazyItemHandler.invalidate();
-    }
-
-    @Override
-    protected void saveAdditional(CompoundTag p_187471_) {
-        p_187471_.put("inventory", itemHandler.serializeNBT());
-        super.saveAdditional(p_187471_);
-    }
-
-    @Override
-    public void load(CompoundTag p_155245_) {
-        super.load(p_155245_);
-        itemHandler.deserializeNBT(p_155245_.getCompound("inventory"));
-    }
-
-    public void drops(){
-        SimpleContainer inventory = new SimpleContainer(itemHandler.getSlots());
-        for(int i = 0;i<itemHandler.getSlots();i++){
-            inventory.setItem(i, itemHandler.getStackInSlot(i));
-        }
-        Containers.dropContents(this.level, this.worldPosition, inventory);
-    }
-
-    public static void tick(Level level, BlockPos pos, BlockState state, RacletteMachineBlockEntity entity){
-        if(level.isClientSide()){
-            return;
         }
 
-        if(hasRecipe(entity)){
-            entity.progress++;
-            setChanged(level, pos, state);
-
-            if(entity.progress >= entity.maxProgress){
-                craftItem(entity);
-            }
-        } else {
-            entity.resetProgress();
-            setChanged(level, pos, state);
+        if (flag){
+            setChanged(pLevel, pPos, pState);
         }
     }
 
-    private static void craftItem(RacletteMachineBlockEntity entity) {
-        Level level = entity.level;
-        SimpleContainer inventory = new SimpleContainer(entity.itemHandler.getSlots());
-        for (int i = 0; i < entity.itemHandler.getSlots(); i++) {
-            inventory.setItem(i, entity.itemHandler.getStackInSlot(i));
+    public NonNullList<ItemStack> getItems() {
+        return this.items;
+    }
+
+    @Override
+    public void load(CompoundTag pTag) {
+        super.load(pTag);
+        this.items.clear();
+        ContainerHelper.loadAllItems(pTag, this.items);
+        if (pTag.contains("CookingTimes", 11)){
+            int[] aint = pTag.getIntArray("CookingTimes");
+            System.arraycopy(aint, 0, this.cookingProgress, 0, Math.min(this.cookingTime.length, aint.length));
         }
 
-        Optional<RacletteMachineRecipe> recipe = level.getRecipeManager().getRecipeFor(RacletteMachineRecipe.Type.INSTANCE, inventory, level);
-        
-        if(hasRecipe(entity)){
-            entity.itemHandler.extractItem(1, 1, false);
-            entity.itemHandler.setStackInSlot(2, new ItemStack(recipe.get().getResultItem().getItem(), entity.itemHandler.getStackInSlot(2).getCount() + 1));
-            entity.resetProgress();
+        if (pTag.contains("CookingTotalTimes", 11)){
+            int[] aint1 = pTag.getIntArray("CookingTotalTimes");
+            System.arraycopy(aint1, 0, this.cookingTime, 0, Math.min(this.cookingTime.length, aint1.length));
         }
     }
 
-    private static boolean hasRecipe(RacletteMachineBlockEntity entity) {
-        Level level = entity.level;
-        SimpleContainer inventory = new SimpleContainer(entity.itemHandler.getSlots());
-        for(int i = 0;i<entity.itemHandler.getSlots();i++){
-            inventory.setItem(i, entity.itemHandler.getStackInSlot(i));
+    @Override
+    protected void saveAdditional(CompoundTag pTag) {
+        super.saveAdditional(pTag);
+        ContainerHelper.saveAllItems(pTag, this.items, true);
+        pTag.putIntArray("CookingTimes", this.cookingProgress);
+        pTag.putIntArray("CookingTotalTimes", this.cookingTime);
+    }
+
+    public Optional<RacletteRecipe> getCookableRecipe(ItemStack pStack) {
+        return this.items.stream().noneMatch(ItemStack::isEmpty) ? Optional.empty() : this.quickCheck.getRecipeFor(new SimpleContainer(pStack), this.level);
+     }
+
+    @Override
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
+    public CompoundTag getUpdateTag() {
+        CompoundTag compoundtag = new CompoundTag();
+        ContainerHelper.saveAllItems(compoundtag, this.items, true);
+        return compoundtag;
+    }
+
+    public boolean placeFood(@Nullable Entity pEntity, ItemStack pStack, int pCookTime) {
+        for(int i = 0; i < this.items.size(); ++i) {
+           ItemStack itemstack = this.items.get(i);
+           if (itemstack.isEmpty()) {
+              this.cookingTime[i] = pCookTime;
+              this.cookingProgress[i] = 0;
+              this.items.set(i, pStack.split(1));
+              this.level.gameEvent(GameEvent.BLOCK_CHANGE, this.getBlockPos(), GameEvent.Context.of(pEntity, this.getBlockState()));
+              this.markUpdated();
+              return true;
+           }
         }
-        Optional<RacletteMachineRecipe> recipe = level.getRecipeManager().getRecipeFor(RacletteMachineRecipe.Type.INSTANCE, inventory, level);
-        return recipe.isPresent() && canInsertAmount(inventory) && canInsertItem(inventory, recipe.get().getResultItem());
+  
+        return false;
+     }
+
+    public void markUpdated() {
+        this.setChanged();
+        this.getLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
     }
 
-    private static boolean canInsertItem(SimpleContainer inventory, ItemStack itemStack) {
-        return inventory.getItem(2).getItem() == itemStack.getItem() || inventory.getItem(2).isEmpty();
+    public void dowse() {
+        if (this.level != null){
+            this.markUpdated();
+        }
     }
 
-    private static boolean canInsertAmount(SimpleContainer inventory) {
-        return inventory.getItem(2).getMaxStackSize() > inventory.getItem(2).getCount();
-    }
-
-    private void resetProgress() {
-        this.progress = 0;
+    @Override
+    public void clearContent() {
+        this.items.clear();
     }
 }
