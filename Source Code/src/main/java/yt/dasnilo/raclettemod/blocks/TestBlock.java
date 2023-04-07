@@ -97,7 +97,7 @@ public class TestBlock extends BaseEntityBlock{
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type){
-        return createTickerHelper(type, RacletteBlockEntities.TEST_BLOCK.get(), TestBlockEntity::cookTick);
+        return true ? createTickerHelper(type, RacletteBlockEntities.TEST_BLOCK.get(), TestBlockEntity::cookTick) : createTickerHelper(type, RacletteBlockEntities.TEST_BLOCK.get(), TestBlockEntity::cooldownTick);
     }
 
 }
