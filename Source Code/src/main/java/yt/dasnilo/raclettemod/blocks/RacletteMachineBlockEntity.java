@@ -29,9 +29,9 @@ import yt.dasnilo.raclettemod.recipe.RacletteRecipe;
 public class RacletteMachineBlockEntity extends BlockEntity implements Clearable{
 
     private static final int NUM_SLOTS = 4;
-    private final NonNullList<ItemStack> items = NonNullList.withSize(4, ItemStack.EMPTY);
-    private final int[] cookingProgress = new int[4];
-    private final int[] cookingTime = new int[4];
+    private final NonNullList<ItemStack> items = NonNullList.withSize(NUM_SLOTS, ItemStack.EMPTY);
+    private final int[] cookingProgress = new int[NUM_SLOTS];
+    private final int[] cookingTime = new int[NUM_SLOTS];
     private final CachedCheck<Container, RacletteRecipe> quickCheck = RecipeManager.createCheck(RacletteRecipe.Type.INSTANCE);
 
     public RacletteMachineBlockEntity(BlockPos pPos, BlockState pBlockState) {
@@ -47,10 +47,9 @@ public class RacletteMachineBlockEntity extends BlockEntity implements Clearable
                 pBlockEntity.cookingProgress[i]++;
                 if (pBlockEntity.cookingProgress[i] >= pBlockEntity.cookingTime[i]) {
                     Container container = new SimpleContainer(itemstack);
-                    ItemStack itemstack1 = pBlockEntity.quickCheck.getRecipeFor(container, pLevel).map((p_155305_) -> {
-                        return p_155305_.assemble(container);
-                    }).orElse(itemstack);
-                    Containers.dropItemStack(pLevel, (double)pPos.getX(), (double)pPos.getY(), (double)pPos.getZ(), itemstack1);
+                    ItemStack itemstack1 = pBlockEntity.quickCheck.getRecipeFor(container, pLevel).map((p_155305_) -> {return p_155305_.assemble(container);}).orElse(itemstack);
+                    itemstack1.setCount(1);
+                    Containers.dropItemStack(pLevel, pPos.getX(), pPos.getY(), pPos.getZ(), itemstack1);
                     pBlockEntity.items.set(i, ItemStack.EMPTY);
                     pLevel.sendBlockUpdated(pPos, pState, pState, 3);
                     pLevel.gameEvent(GameEvent.BLOCK_CHANGE, pPos, GameEvent.Context.of(pState));
