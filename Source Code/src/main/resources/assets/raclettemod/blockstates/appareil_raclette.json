@@ -1,19 +1,19 @@
 {
     "variants": {
         "facing=north": {
-            "model": "raclettemod:block/appareil_raclette"
+            "model": "raclettemod:block/appareil_raclette",
+            "y": 90
         },
         "facing=south": {
             "model": "raclettemod:block/appareil_raclette",
-            "y": 180
+            "y": 270
         },
         "facing=west": {
             "model": "raclettemod:block/appareil_raclette",
-            "y": 270
+            "y": 180
         },
         "facing=east": {
-            "model": "raclettemod:block/appareil_raclette",
-            "y": 90
+            "model": "raclettemod:block/appareil_raclette"
         }
     }
 }

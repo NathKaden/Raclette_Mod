@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
@@ -13,6 +14,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -28,41 +30,51 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import yt.dasnilo.raclettemod.contents.RacletteBlockEntities;
 import yt.dasnilo.raclettemod.recipe.RacletteRecipe;
 
 public class RacletteMachineBlock extends BaseEntityBlock{
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    private static final VoxelShape SHAPE_WE = Block.box(2, 0, 1, 14, 8, 15);
+    private static final VoxelShape SHAPE_NS = Block.box(1,0,2,15,8,14);
 
     public RacletteMachineBlock(Properties pProperties) {
         super(pProperties);
     }
 
     @Override
-    public BlockState getStateForPlacement(BlockPlaceContext pContext) {
-        return this.defaultBlockState().setValue(FACING,pContext.getHorizontalDirection().getOpposite());
+    public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext collision) {
+        Direction direction = state.getValue(FACING);
+        return direction.getAxis() == Direction.Axis.Z ? SHAPE_NS : SHAPE_WE;
     }
 
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext pContext) {
+        return this.defaultBlockState().setValue(FACING, pContext.getHorizontalDirection());
+    }
+    
     @Override
     public BlockState rotate(BlockState pState, Rotation pRotation) {
         return pState.setValue(FACING, pRotation.rotate(pState.getValue(FACING)));
     }
 
     @Override
-    public BlockState mirror(BlockState p_54122_, Mirror p_54123_) {
-        return super.mirror(p_54122_, p_54123_);
-    }
-    @Override
-    protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
-        builder.add(FACING);
+    public BlockState mirror(BlockState pState, Mirror pMirror) {
+        return pState.rotate(pMirror.getRotation(pState.getValue(FACING)));
     }
 
-    // ---------------------
     @Override
-    public RenderShape getRenderShape(BlockState p_49232_) {
+    protected void createBlockStateDefinition(Builder<Block, BlockState> pBuilder) {
+        pBuilder.add(FACING);
+    }
+    // ---------------------------------------------------------------------
+    @Override
+    public RenderShape getRenderShape(BlockState pState) {
         return RenderShape.MODEL;
     }
-
+ 
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
         BlockEntity blockentity = pLevel.getBlockEntity(pPos);
         if (blockentity instanceof RacletteMachineBlockEntity raclettemachineblockentity) {
