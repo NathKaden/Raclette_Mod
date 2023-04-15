@@ -9,9 +9,12 @@ import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 
+@OnlyIn(Dist.CLIENT)
 public class RacletteMachineRenderer implements BlockEntityRenderer<RacletteMachineBlockEntity>{
     private final ItemRenderer itemRenderer;
     
@@ -35,7 +38,7 @@ public class RacletteMachineRenderer implements BlockEntityRenderer<RacletteMach
             pPoseStack.mulPose(Vector3f.YP.rotationDegrees(f));
             pPoseStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
             pPoseStack.translate(-0.3125D, -0.3125D, 0.0D);
-            pPoseStack.scale(0.375F, 0.375F, 0.375F);
+            pPoseStack.scale(2F,2F,2F);
             this.itemRenderer.renderStatic(itemstack, ItemTransforms.TransformType.FIXED, pPackedLight, pPackedOverlay, pPoseStack, pBufferSource, i + j);
             pPoseStack.popPose();
          }
