@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
 
+import net.minecraft.client.renderer.blockentity.CampfireRenderer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -15,7 +16,6 @@ import yt.dasnilo.raclettemod.contents.RacletteItems;
 import yt.dasnilo.raclettemod.contents.RacletteRecipeSerializers;
 import yt.dasnilo.raclettemod.contents.RacletteRecipeTypes;
 
-// The value here should match an entry in the META-INF/mods.toml file
 @Mod(RacletteMod.MODID)
 public class RacletteMod
 {
