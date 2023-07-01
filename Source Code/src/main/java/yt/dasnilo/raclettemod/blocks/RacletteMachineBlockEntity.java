@@ -28,7 +28,7 @@ import yt.dasnilo.raclettemod.recipe.RacletteRecipe;
 
 public class RacletteMachineBlockEntity extends BlockEntity implements Clearable{
 
-    private static final int NUM_SLOTS = 4;
+    private static final int NUM_SLOTS = 1;
     private final NonNullList<ItemStack> items = NonNullList.withSize(NUM_SLOTS, ItemStack.EMPTY);
     private final int[] cookingProgress = new int[NUM_SLOTS];
     private final int[] cookingTime = new int[NUM_SLOTS];

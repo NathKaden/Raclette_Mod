@@ -5,8 +5,10 @@ import org.slf4j.Logger;
 import com.mojang.logging.LogUtils;
 
 import net.minecraft.client.renderer.blockentity.CampfireRenderer;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -15,6 +17,7 @@ import yt.dasnilo.raclettemod.contents.RacletteBlocks;
 import yt.dasnilo.raclettemod.contents.RacletteItems;
 import yt.dasnilo.raclettemod.contents.RacletteRecipeSerializers;
 import yt.dasnilo.raclettemod.contents.RacletteRecipeTypes;
+import yt.dasnilo.raclettemod.renderers.RacletteMachineRenderer;
 
 @Mod(RacletteMod.MODID)
 public class RacletteMod
@@ -33,5 +36,6 @@ public class RacletteMod
       modEventBus.addListener(this::commonSetup);
       MinecraftForge.EVENT_BUS.register(this);
   }
+
   private void commonSetup(final FMLCommonSetupEvent event){}
 }
